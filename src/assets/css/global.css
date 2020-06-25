@@ -9,19 +9,34 @@ body,
     min-width: 1366px;
 }
 
+
+/* 面包屑导航 */
+
 .el-breadcrumb {
     margin-bottom: 15px;
     font-size: 12px;
 }
 
+
+/* 卡片视图区 */
+
+
+/* 默认卡片样式权重高于自定义样式，所以添加：!important */
+
 .el-card {
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15) !important;
 }
+
+
+/* 控制表格间距问题 */
 
 .el-table {
     margin-top: 15px;
     font-size: 12px;
 }
+
+
+/* 页码条和表格保持间距 */
 
 .el-pagination {
     margin-top: 15px;

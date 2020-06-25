@@ -79,6 +79,7 @@ Vue.use(Checkbox)
 Vue.use(Upload)
 Vue.use(Timeline)
 Vue.use(TimelineItem)
-    // 挂载，因此全局可以通过 this.$message 访问 message
+    // 挂载，因此全局可以通过 $message 访问 message
 Vue.prototype.$message = Message
+    // 原型挂载，因此每一个组件可以通过 $confirm 弹出确认对话框，比如删除
 Vue.prototype.$confirm = MessageBox.confirm

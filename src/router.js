@@ -53,6 +53,7 @@ const router = new Router({
             // 如果用户没有登陆，但是直接通过 URl访问需要权限的网页，需要重新导航到登录页面
             path: '/home',
             component: Home,
+            // 将 home页面 重定向到 welcome组件，并将之作为子路由
             redirect: '/welcome',
             children: [
                 { path: '/welcome', component: Welcome },
