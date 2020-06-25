@@ -6,6 +6,7 @@ body,
     height: 100%;
     margin: 0;
     padding: 0;
+    /* 设置屏幕最小宽度，防止样式被改的很丑 */
     min-width: 1366px;
 }
 

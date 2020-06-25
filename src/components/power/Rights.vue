@@ -1,4 +1,7 @@
 <template>
+<!-- 权限列表组件页面 -->
+<!-- 权限、角色、用户 的关系：把权限分配给不同的角色，
+      把角色赋予不同的用户，因此用户有不同的权限 -->
   <div>
     <!-- 面包屑导航区域 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
@@ -14,7 +17,9 @@
         <el-table-column label="权限名称" prop="authName"></el-table-column>
         <el-table-column label="路径" prop="path"></el-table-column>
         <el-table-column label="权限等级" prop="level">
+          <!-- 通过作用域插槽，自定义输出格式 -->
           <template slot-scope="scope">
+            <!-- el-tag：tag标签（element-ui组件）type="success"：表示标签颜色 -->
             <el-tag v-if="scope.row.level === '0'">一级</el-tag>
             <el-tag type="success" v-else-if="scope.row.level === '1'">二级</el-tag>
             <el-tag type="warning" v-else>三级</el-tag>
@@ -44,7 +49,7 @@ export default {
       if (res.meta.status !== 200) {
         return this.$message.error('获取权限列表失败！')
       }
-
+      // 获取结果后，给视图渲染后台结果
       this.rightsList = res.data
       console.log(this.rightsList)
     }

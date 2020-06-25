@@ -57,7 +57,9 @@ const router = new Router({
             redirect: '/welcome',
             children: [
                 { path: '/welcome', component: Welcome },
+                // 用户路由
                 { path: '/users', component: Users },
+                // 权限路由
                 { path: '/rights', component: Rights },
                 { path: '/roles', component: Roles },
                 { path: '/categories', component: Cate },

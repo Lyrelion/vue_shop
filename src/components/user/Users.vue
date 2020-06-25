@@ -59,6 +59,7 @@
             <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeUserById(scope.row.id)"></el-button>
             <!-- 分配角色按钮 effect="dark"：提示框颜色 placement="top"：提示框显示位置 :enterable="false"：鼠标离开后隐藏提示框-->
             <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
+              <!-- @click="setRole(scope.row)"：点击后出现 分配角色对话框，把对应的角色id传入 -->
               <el-button type="warning" icon="el-icon-setting" size="mini" @click="setRole(scope.row)"></el-button>
             </el-tooltip>
           </template>
@@ -127,7 +128,9 @@
         <p>当前的用户：{{userInfo.username}}</p>
         <p>当前的角色：{{userInfo.role_name}}</p>
         <p>分配新角色：
+          <!-- v-model="selectedRoleId"：双向绑定用户选择的值 -->
           <el-select v-model="selectedRoleId" placeholder="请选择">
+            <!-- 遍历角色列表 每个item都是一个角色 获取每一项选择文本 把分配的角色id 绑到 data() -->
             <el-option v-for="item in rolesList" :key="item.id" :label="item.roleName" :value="item.id">
             </el-option>
           </el-select>
@@ -397,6 +400,7 @@ export default {
     },
     // 展示分配角色的对话框
     async setRole(userInfo) {
+      // 点击分配角色按钮的同时，获取到的用户信息，保存到data()中，给后面的对话框用
       this.userInfo = userInfo
 
       // 在展示对话框之前，获取所有角色的列表
@@ -404,12 +408,12 @@ export default {
       if (res.meta.status !== 200) {
         return this.$message.error('获取角色列表失败！')
       }
-
+      // 将获取到的数据结果，保存到 data()中给后面用 
       this.rolesList = res.data
-
+      // 点击分配角色按钮后，将对话框状态转换为可见
       this.setRoleDialogVisible = true
     },
-    // 点击按钮，分配角色
+    // 点击确定按钮，分配角色
     async saveRoleInfo() {
       if (!this.selectedRoleId) {
         return this.$message.error('请选择要分配的角色！')
@@ -427,12 +431,16 @@ export default {
       }
 
       this.$message.success('更新角色成功！')
+      // 刷新当前角色列表
       this.getUserList()
+      // 隐藏当前弹出对话框
       this.setRoleDialogVisible = false
     },
-    // 监听分配角色对话框的关闭事件
+    // 监听分配角色对话框的关闭事件，每次关闭后，都应重置一部分信息
     setRoleDialogClosed() {
+      // 将用户选中的id进行清空
       this.selectedRoleId = ''
+      // 将选中的用户信息进行清空
       this.userInfo = {}
     }
   }
