@@ -73,6 +73,7 @@ const router = new Router({
                 { path: '/goods/add', component: Add },
                 // 订单路由
                 { path: '/orders', component: Order },
+                // 报表路由
                 { path: '/reports', component: Report }
             ]
         }

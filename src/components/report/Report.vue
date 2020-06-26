@@ -1,4 +1,5 @@
 <template>
+<!-- 数据报表组件 echarts插件 -->
   <div>
     <!-- 面包屑导航区域 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
@@ -18,12 +19,13 @@
 <script>
 // 1. 导入 echarts
 import echarts from 'echarts'
+// 合并两个 data()对象 / 深拷贝浅拷贝
 import _ from 'lodash'
 
 export default {
   data() {
     return {
-      // 需要合并的数据
+      // 4. 准备数据和配置项
       options: {
         title: {
           text: '用户来源'
@@ -59,17 +61,16 @@ export default {
   created() {},
   // 此时，页面上的元素，已经被渲染完毕了！
   async mounted() {
-    // 3. 基于准备好的dom，初始化echarts实例
+    // 3. 基于准备好的dom，初始化 echarts实例
     var myChart = echarts.init(document.getElementById('main'))
-
+    // 获取折线图数据 缺少东西 需要用 merge 合并 echarts和服务器返回的折线数据
     const { data: res } = await this.$http.get('reports/type/1')
     if (res.meta.status !== 200) {
       return this.$message.error('获取折线图数据失败！')
     }
-
-    // 4. 准备数据和配置项
+    // 4. 准备数据和配置项 
+    // merge：合并两个数据对象
     const result = _.merge(res.data, this.options)
-
     // 5. 展示数据
     myChart.setOption(result)
   },
