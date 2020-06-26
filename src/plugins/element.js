@@ -38,7 +38,7 @@ import {
     Checkbox,
     Upload
 } from 'element-ui'
-
+// 导入时间轴插件 这个插件在element-UI中没有
 import Timeline from './timeline/index.js'
 import TimelineItem from './timeline-item/index.js'
 
@@ -77,6 +77,7 @@ Vue.use(Step)
 Vue.use(CheckboxGroup)
 Vue.use(Checkbox)
 Vue.use(Upload)
+    // 将导入插件注册为全局组件
 Vue.use(Timeline)
 Vue.use(TimelineItem)
     // 挂载，因此全局可以通过 $message 访问 message

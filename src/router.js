@@ -71,6 +71,7 @@ const router = new Router({
                 { path: '/goods', component: GoodsList },
                 // 添加商品路由
                 { path: '/goods/add', component: Add },
+                // 订单路由
                 { path: '/orders', component: Order },
                 { path: '/reports', component: Report }
             ]

@@ -1,4 +1,5 @@
 <template>
+<!-- 订单列表组件 -->
   <div>
     <!-- 面包屑导航区域 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
@@ -145,6 +146,7 @@ export default {
       this.$refs.addressFormRef.resetFields()
     },
     async showProgressBox() {
+      // 测试运单号物流信息
       const { data: res } = await this.$http.get('/kuaidi/804909574412544580')
 
       if (res.meta.status !== 200) {
@@ -161,6 +163,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
+// 导入时间轴插件css
 @import '../../plugins/timeline/timeline.css';
 @import '../../plugins/timeline-item/timeline-item.css';
 
