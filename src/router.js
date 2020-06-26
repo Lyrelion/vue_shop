@@ -61,10 +61,15 @@ const router = new Router({
                 { path: '/users', component: Users },
                 // 权限路由
                 { path: '/rights', component: Rights },
+                // 角色路由
                 { path: '/roles', component: Roles },
+                // 商品分类路由
                 { path: '/categories', component: Cate },
+                // 分类参数路由
                 { path: '/params', component: Params },
+                // 商品列表展示路由
                 { path: '/goods', component: GoodsList },
+                // 添加商品路由
                 { path: '/goods/add', component: Add },
                 { path: '/orders', component: Order },
                 { path: '/reports', component: Report }

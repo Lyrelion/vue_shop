@@ -1,4 +1,5 @@
 <template>
+<!-- 添加商品组件页面 -->
   <div>
     <!-- 面包屑导航区域 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
@@ -12,7 +13,10 @@
       <!-- 提示区域 -->
       <el-alert title="添加商品信息" type="info" center show-icon :closable="false">
       </el-alert>
-      <!-- 步骤条区域 -->
+      <!-- 步骤条区域 steps -element-ui组件，记得注册 -->
+      <!-- title：指定每个步骤的文本 -->
+      <!-- align-center:控制文本居中显示 -->
+      <!-- :active="activeIndex - 0"：默认高亮第一步骤 -->
       <el-steps :space="200" :active="activeIndex - 0" finish-status="success" align-center>
         <el-step title="基本信息"></el-step>
         <el-step title="商品参数"></el-step>
@@ -23,7 +27,11 @@
       </el-steps>
 
       <!-- tab栏区域 -->
-
+      <!-- :tab-position="'left'"：让标签一直在左侧 -->
+      <!-- v-model="activeIndex" / :active="activeIndex - 0" ：用同一个数据进行绑定实现同步 -->
+      <!-- el-form ：大表单必须在最外面 -->
+      <!-- label-position="top"：表单内容在表单下面 -->
+      <!-- :before-leave="beforeTabLeave"：即将离开或进入的标签页名字 -->
       <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="100px" label-position="top">
         <el-tabs v-model="activeIndex" :tab-position="'left'" :before-leave="beforeTabLeave" @tab-click="tabClicked">
           <el-tab-pane label="基本信息" name="0">
@@ -60,6 +68,8 @@
           </el-tab-pane>
           <el-tab-pane label="商品图片" name="3">
             <!-- action 表示图片要上传到的后台API地址 -->
+            <!-- :headers="headerObj"：为上传组件添加 token -->
+            <!-- :on-success="handleSuccess"：上传成功后，调用的函数 -->
             <el-upload :action="uploadURL" :on-preview="handlePreview" :on-remove="handleRemove" list-type="picture" :headers="headerObj" :on-success="handleSuccess">
               <el-button size="small" type="primary">点击上传</el-button>
             </el-upload>
@@ -172,8 +182,9 @@ export default {
         return false
       }
     },
+    // 选中商品参数面板发生的事件
     async tabClicked() {
-      // console.log(this.activeIndex)
+      // console.log(this.activeIndex) // 当前对应名称
       // 证明访问的是动态参数面板
       if (this.activeIndex === '1') {
         const { data: res } = await this.$http.get(
