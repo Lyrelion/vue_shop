@@ -1,6 +1,11 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+// 路由懒加载：当用户访问某路由时，才加载对应的组件
+// 安装 @babel/plugin-systax-dynamic-import 包
+// 在 babel.config.js 配置文件中 声明该插件
+// 将路由改为 按需加载 的形式
+
 // import Login from './components/Login.vue'
 const Login = () =>
     import ( /* webpackChunkName: "login_home_welcome" */ './components/Login.vue')
