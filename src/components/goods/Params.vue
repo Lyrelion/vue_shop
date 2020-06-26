@@ -1,4 +1,5 @@
 <template>
+<!-- 分类参数区 -->
   <div>
     <!-- 面包屑导航区域 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
@@ -10,6 +11,8 @@
     <!-- 卡片视图区域 -->
     <el-card>
       <!-- 警告区域 -->
+      <!-- :closable="false"：禁止关闭 -->
+      <!-- show-icon：展示感叹号 -->
       <el-alert show-icon title="注意：只允许为第三级分类设置相关参数！" type="warning" :closable="false"></el-alert>
 
       <!-- 选择商品分类区域 -->
@@ -17,16 +20,25 @@
         <el-col>
           <span>选择商品分类：</span>
           <!-- 选择商品分类的级联选择框 -->
+          <!-- expand-trigger="hover"：鼠标移动上去的时候触发子菜单 -->
+          <!-- :options="catelist"：绑定数据源 -->
+          <!-- :props="cateProps"：配置级联选择框 -->
+          <!-- v-model="selectedCateKeys"：把我们选中的级联选择框选项 双向绑定 -->
+          <!-- @change="handleChange"：级联选择框发生改变时触发的事件 -->
           <el-cascader expand-trigger="hover" :options="catelist" :props="cateProps" v-model="selectedCateKeys" @change="handleChange">
           </el-cascader>
         </el-col>
       </el-row>
 
-      <!-- tab 页签区域 -->
+      <!-- tab 页签区域，点击不同的 Tab，切换不同的页面 -->
+      <!-- v-model="activeName"：被激活的页签的名称 -->
+      <!-- @tab-click="handleTabClick"：点击不同选项卡触发的事件 -->
       <el-tabs v-model="activeName" @tab-click="handleTabClick">
         <!-- 添加动态参数的面板 -->
+        <!-- name="many"：这指的是每个选项卡对应的唯一标识 -->
         <el-tab-pane label="动态参数" name="many">
           <!-- 添加参数的按钮 -->
+          <!-- :disabled="isBtnDisabled"：是否进行禁用，根据计算属性，判断是否选中了三级按钮 -->
           <el-button type="primary" size="mini" :disabled="isBtnDisabled" @click="addDialogVisible=true">添加参数</el-button>
           <!-- 动态参数表格 -->
           <el-table :data="manyTableData" border stripe>
@@ -35,6 +47,7 @@
               <template slot-scope="scope">
                 <!-- 循环渲染Tag标签 -->
                 <el-tag v-for="(item, i) in scope.row.attr_vals" :key="i" closable @close="handleClose(i, scope.row)">{{item}}</el-tag>
+                <!-- 输入文本框 和 button 只能显示一个 -->
                 <!-- 输入的文本框 -->
                 <el-input class="input-new-tag" v-if="scope.row.inputVisible" v-model="scope.row.inputValue" ref="saveTagInput" size="small" @keyup.enter.native="handleInputConfirm(scope.row)" @blur="handleInputConfirm(scope.row)">
                 </el-input>
@@ -86,6 +99,7 @@
     </el-card>
 
     <!-- 添加参数的对话框 -->
+    <!-- :title="'添加' + titleText"：动态绑定展示的文本是哪个对话框 -->
     <el-dialog :title="'添加' + titleText" :visible.sync="addDialogVisible" width="50%" @close="addDialogClosed">
       <!-- 添加参数的对话框 -->
       <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="100px">
@@ -123,8 +137,11 @@ export default {
       catelist: [],
       // 级联选择框的配置对象
       cateProps: {
+        // 选中值
         value: 'cat_id',
+        // 看到的值
         label: 'cat_name',
+        // 父子节点的嵌套属性
         children: 'children'
       },
       // 级联选择框双向绑定到的数组
@@ -160,6 +177,7 @@ export default {
     }
   },
   created() {
+    // 获取所有的商品分类列表
     this.getCateList()
   },
   methods: {
@@ -171,7 +189,6 @@ export default {
       }
 
       this.catelist = res.data
-
       console.log(this.catelist)
     },
     // 级联选择框选中项变化，会触发这个函数
@@ -184,11 +201,15 @@ export default {
       this.getParamsData()
     },
     // 获取参数的列表数据
+    // 应该在级联选择器发生改变/Tab面板发生切换的时候都重新获取
     async getParamsData() {
-      // 证明选中的不是三级分类
+      // 证明选中的不是三级分类 控制级联选择器的选择范围
       if (this.selectedCateKeys.length !== 3) {
+        // 重置选中数组
         this.selectedCateKeys = []
+        // 重置动态参数的数据
         this.manyTableData = []
+        // 重置静态参数的数据
         this.onlyTableData = []
         return
       }
@@ -199,6 +220,7 @@ export default {
       const { data: res } = await this.$http.get(
         `categories/${this.cateId}/attributes`,
         {
+          // 接口文档中规定 sel属性指定返回的是动态属性还是静态属性
           params: { sel: this.activeName }
         }
       )
@@ -208,6 +230,7 @@ export default {
       }
 
       res.data.forEach(item => {
+        // 是空就返回[]，不是空就返回字符串分割
         item.attr_vals = item.attr_vals ? item.attr_vals.split(' ') : []
         // 控制文本框的显示与隐藏
         item.inputVisible = false
@@ -217,6 +240,7 @@ export default {
 
       console.log(res.data)
       if (this.activeName === 'many') {
+        // 动态参数的数据
         this.manyTableData = res.data
       } else {
         this.onlyTableData = res.data
@@ -270,6 +294,7 @@ export default {
     },
     // 点击按钮，修改参数信息
     editParams() {
+      // 预验证
       this.$refs.editFormRef.validate(async valid => {
         if (!valid) return
         const { data: res } = await this.$http.put(
@@ -283,6 +308,7 @@ export default {
 
         this.$message.success('修改参数成功！')
         this.getParamsData()
+        // 让弹出框不可见
         this.editDialogVisible = false
       })
     },
@@ -318,11 +344,12 @@ export default {
     // 文本框失去焦点，或摁下了 Enter 都会触发
     async handleInputConfirm(row) {
       if (row.inputValue.trim().length === 0) {
-        row.inputValue = ''
+        row.inputValue = '' 
         row.inputVisible = false
         return
       }
       // 如果没有return，则证明输入的内容，需要做后续处理
+      // 重新遍历 渲染 tag标签
       row.attr_vals.push(row.inputValue.trim())
       row.inputValue = ''
       row.inputVisible = false
@@ -337,6 +364,7 @@ export default {
         {
           attr_name: row.attr_name,
           attr_sel: row.attr_sel,
+          // 服务器接受的是字符串，客户端传递的是数组。用空格拼接
           attr_vals: row.attr_vals.join(' ')
         }
       )
@@ -362,7 +390,7 @@ export default {
       this.saveAttrVals(row)
     }
   },
-  computed: {
+  computed: { // 计算属性
     // 如果按钮需要被禁用，则返回true，否则返回false
     isBtnDisabled() {
       if (this.selectedCateKeys.length !== 3) {
@@ -373,8 +401,10 @@ export default {
     // 当前选中的三级分类的Id
     cateId() {
       if (this.selectedCateKeys.length === 3) {
+        // 被选中数组的最后一项，就是三级id，前面是一二级id
         return this.selectedCateKeys[2]
       }
+      // 没有选中三级按钮就返回空值
       return null
     },
     // 动态计算标题的文本
@@ -390,13 +420,14 @@ export default {
 
 <style lang="less" scoped>
 .cat_opt {
+  // 给商品分类区添加间隔7
   margin: 15px 0;
 }
 
 .el-tag {
   margin: 10px;
 }
-
+ // 控制文本框的长度
 .input-new-tag {
   width: 120px;
 }
