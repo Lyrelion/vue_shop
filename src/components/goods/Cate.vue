@@ -1,4 +1,5 @@
 <template>
+<!-- 商品分类组件 -->
   <div>
     <!-- 面包屑导航区域 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
@@ -15,19 +16,28 @@
         </el-col>
       </el-row>
 
-      <!-- 表格 -->
+      <!-- 树形表格 用到依赖：vue-table-with-tree-grid -->
+      <!-- :columns="columns"：为table指定列的定义 -->
+      <!-- :selection-type="false"：是否是多选框表格 -->
+      <!-- :expand-type="false"：是否有展开行效果 -->
+      <!-- show-index：是否显示数据索引 index-text="#"：指定索引列的名称 -->
+      <!-- :show-row-hover="false"：鼠标移动上去是否具有高亮效果 -->
       <tree-table class="treeTable" :data="catelist" :columns="columns" :selection-type="false" :expand-type="false" show-index index-text="#" border :show-row-hover="false">
-        <!-- 是否有效 -->
+        <!-- 是否有效 采用 if 按需渲染 -->
         <template slot="isok" slot-scope="scope">
+          <!-- 对勾 -->
           <i class="el-icon-success" v-if="scope.row.cat_deleted === false" style="color: lightgreen;"></i>
+          <!-- 错叉 -->
           <i class="el-icon-error" v-else style="color: red;"></i>
         </template>
+
         <!-- 排序 -->
         <template slot="order" slot-scope="scope">
           <el-tag size="mini" v-if="scope.row.cat_level===0">一级</el-tag>
           <el-tag type="success" size="mini" v-else-if="scope.row.cat_level===1">二级</el-tag>
           <el-tag type="warning" size="mini" v-else>三级</el-tag>
         </template>
+
         <!-- 操作 -->
         <template slot="opt">
           <el-button type="primary" icon="el-icon-edit" size="mini">编辑</el-button>
@@ -36,20 +46,29 @@
       </tree-table>
 
       <!-- 分页区域 -->
+      <!-- @size-change="handleSizeChange"：监听条数值改变的固定事件 -->
+      <!-- :current-page：当前我们所渲染的页面 -->
+      <!-- :total="total"：查询的总条数 -->
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="querInfo.pagenum" :page-sizes="[3, 5, 10, 15]" :page-size="querInfo.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
     </el-card>
 
     <!-- 添加分类的对话框 -->
     <el-dialog title="添加分类" :visible.sync="addCateDialogVisible" width="50%" @close="addCateDialogClosed">
-      <!-- 添加分类的表单 -->
+      <!-- 添加带有验证规则的分类表单 -->
       <el-form :model="addCateForm" :rules="addCateFormRules" ref="addCateFormRef" label-width="100px">
         <el-form-item label="分类名称：" prop="cat_name">
           <el-input v-model="addCateForm.cat_name"></el-input>
         </el-form-item>
         <el-form-item label="父级分类：">
+          <!-- <el-cascader：级联选择器 -->
+          <!-- expand-trigger="hover"：通过鼠标覆盖 来实现展开效果 -->
           <!-- options 用来指定数据源 -->
           <!-- props 用来指定配置对象 -->
+          <!-- v-model="selectedKeys"：双向绑定的数据此处必须是数组，因为有至少两项 选中的父级分类的Id数组 -->
+          <!-- @change="parentCateChanged"：只要父级选项框发生变化，就会触发的事件，比如改变子元素对应的父元素分级 -->
+          <!-- clearable：是否支持清空选项 -->
+          <!-- change-on-select：级联选择框不允许选择一级分类，写这个就可以选了 -->
           <el-cascader expand-trigger="hover" :options="parentCateList" :props="cascaderProps" v-model="selectedKeys" @change="parentCateChanged" clearable change-on-select>
           </el-cascader>
         </el-form-item>
@@ -66,7 +85,7 @@
 export default {
   data() {
     return {
-      // 查询条件
+      // 查询商品分类条件
       querInfo: {
         type: 3,
         pagenum: 1,
@@ -79,7 +98,9 @@ export default {
       // 为table指定列的定义
       columns: [
         {
+          // 列标题名称
           label: '分类名称',
+          // 列具体值
           prop: 'cat_name'
         },
         {
@@ -123,8 +144,11 @@ export default {
       parentCateList: [],
       // 指定级联选择器的配置对象
       cascaderProps: {
+        // 指定具体选中的属性
         value: 'cat_id',
+        // 指定我所看到的属性
         label: 'cat_name',
+        // 指定父子嵌套所使用的属性
         children: 'children'
       },
       // 选中的父级分类的Id数组
@@ -151,12 +175,14 @@ export default {
       // 为总数据条数赋值
       this.total = res.data.total
     },
-    // 监听 pagesize 改变
+    // 监听 pagesize 条数改变
     handleSizeChange(newSize) {
+      // 值改变，立刻将传递参数的 pagesize进行改变
       this.querInfo.pagesize = newSize
+      // 重新获取列表
       this.getCateList()
     },
-    // 监听 pagenum 改变
+    // 监听 pagenum 页码改变
     handleCurrentChange(newPage) {
       this.querInfo.pagenum = newPage
       this.getCateList()
@@ -171,6 +197,7 @@ export default {
     // 获取父级分类的数据列表
     async getParentCateList() {
       const { data: res } = await this.$http.get('categories', {
+        // 获取前两级的数据分类
         params: { type: 2 }
       })
 
@@ -183,6 +210,7 @@ export default {
     },
     // 选择项发生变化触发这个函数
     parentCateChanged() {
+      // 当选择项变化时，打印一下选中的值
       console.log(this.selectedKeys)
       // 如果 selectedKeys 数组中的 length 大于0，证明选中的父级分类
       // 反之，就说明没有选中任何父级分类
@@ -200,6 +228,7 @@ export default {
     },
     // 点击按钮，添加新的分类
     addCate() {
+      // 先进行预校验
       this.$refs.addCateFormRef.validate(async valid => {
         if (!valid) return
         const { data: res } = await this.$http.post('categories', this.addCateForm)
@@ -215,8 +244,11 @@ export default {
     },
     // 监听对话框的关闭事件，重置表单数据
     addCateDialogClosed() {
+      // 清空表单
       this.$refs.addCateFormRef.resetFields()
+      // 清空选中的数组
       this.selectedKeys = []
+      // 清空各个选项
       this.addCateForm.cat_level = 0
       this.addCateForm.cat_pid = 0
     }
@@ -226,10 +258,12 @@ export default {
 
 <style lang="less" scoped>
 .treeTable {
+  // 给按钮和表格之间增加间距
   margin-top: 15px;
 }
 
 .el-cascader {
+  // 让级联选择器占满整个空间
   width: 100%;
 }
 </style>
