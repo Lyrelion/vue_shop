@@ -1,7 +1,7 @@
 <template>
-<!-- 权限列表组件页面 -->
-<!-- 权限、角色、用户 的关系：把权限分配给不同的角色，
-      把角色赋予不同的用户，因此用户有不同的权限 -->
+  <!-- 权限列表组件页面 -->
+  <!-- 权限、角色、用户 的关系：把权限分配给不同的角色，
+  把角色赋予不同的用户，因此用户有不同的权限-->
   <div>
     <!-- 面包屑导航区域 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
@@ -9,7 +9,6 @@
       <el-breadcrumb-item>权限管理</el-breadcrumb-item>
       <el-breadcrumb-item>权限列表</el-breadcrumb-item>
     </el-breadcrumb>
-
     <!-- 卡片视图 -->
     <el-card>
       <el-table :data="rightsList" border stripe>

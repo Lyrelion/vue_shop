@@ -74,6 +74,7 @@ Vue.use(Pagination)
 // 弹出框组件
 Vue.use(Dialog)
 Vue.use(Tag)
+// 树形结构组件
 Vue.use(Tree)
 Vue.use(Select)
 Vue.use(Option)
@@ -91,5 +92,5 @@ Vue.use(Timeline)
 Vue.use(TimelineItem)
 // 全局挂载弹窗提示，可以通过 this.$message.xxx 使用，如 this.$message.error('登录失败')
 Vue.prototype.$message = Message
-// 原型挂载，因此每一个组件可以通过 $confirm 弹出确认对话框，比如删除
+// 确认取消提示框
 Vue.prototype.$confirm = MessageBox.confirm

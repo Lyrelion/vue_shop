@@ -1,5 +1,5 @@
 <template>
-<!-- 角色列表组件页面 -->
+  <!-- 角色列表组件页面 -->
   <div>
     <!-- 面包屑导航区域 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
@@ -18,42 +18,55 @@
       </el-row>
 
       <!-- 角色列表区域 -->
+      <!-- row-key="id" 是新特性，如果是嵌套的数据，rowkey 是必须添加的属性 -->
       <el-table :data="rolelist" border stripe>
         <!-- 展开列 type="expand"-->
         <el-table-column type="expand">
-          <!-- slot-scope="scope"作用域插槽，拿到角色权限信息 -->
           <!-- 三层 for循环，渲染不同等级的的权限信息 -->
           <!-- 采用栅栏系统 el-row-el-col 一行分两列，第一列包含一级权限（占5份），第二列包含二级三级权限（占19份） -->
           <!-- 在el-row 行中遍历 scope.row.children 拿到不同的权限等级-->
           <!-- 在 el-tag 标签中 渲染拿到的权限：{{item1.authName}} -->
           <template slot-scope="scope">
             <!-- 绑定属性数组，底部边框都有，顶部边框只有第一行有 -->
-            <el-row :class="['bdbottom', i1 === 0 ? 'bdtop' : '', 'vcenter']" v-for="(item1, i1) in scope.row.children" :key="item1.id">
+            <el-row
+              :class="['bdbottom', i1 === 0 ? 'bdtop' : '', 'vcenter']"
+              v-for="(item1, i1) in scope.row.children"
+              :key="item1.id"
+            >
               <!-- 渲染一级权限 -->
               <el-col :span="5">
+                <!-- closable：可以移除的小图标-->
                 <el-tag closable @close="removeRightById(scope.row, item1.id)">{{item1.authName}}</el-tag>
                 <!-- 给 tag后面添加小图标 element小图标 -->
                 <i class="el-icon-caret-right"></i>
               </el-col>
               <!-- 渲染二级和三级权限 -->
               <el-col :span="19">
-                <!-- 通过 for 循环 嵌套渲染二级权限 -->
-                <!-- closable：可以移除的小图标 @close="removeRightById(scope.row, item3.id)"：点击删除事件 -->
-                <el-row :class="[i2 === 0 ? '' : 'bdtop', 'vcenter']" v-for="(item2, i2) in item1.children" :key="item2.id">
+                <el-row
+                  :class="[i2 === 0 ? '' : 'bdtop', 'vcenter']"
+                  v-for="(item2, i2) in item1.children"
+                  :key="item2.id"
+                >
                   <el-col :span="6">
-                    <el-tag type="success" closable @close="removeRightById(scope.row, item2.id)">{{item2.authName}}</el-tag>
+                    <el-tag
+                      type="success"
+                      closable
+                      @close="removeRightById(scope.row, item2.id)"
+                    >{{item2.authName}}</el-tag>
                     <i class="el-icon-caret-right"></i>
                   </el-col>
                   <el-col :span="18">
-                    <el-tag type="warning" v-for="item3 in item2.children" :key="item3.id" closable @close="removeRightById(scope.row, item3.id)">{{item3.authName}}</el-tag>
+                    <el-tag
+                      type="warning"
+                      v-for="item3 in item2.children"
+                      :key="item3.id"
+                      closable
+                      @close="removeRightById(scope.row, item3.id)"
+                    >{{item3.authName}}</el-tag>
                   </el-col>
                 </el-row>
               </el-col>
             </el-row>
-
-            <!-- <pre>
-              {{scope.row}}
-            </pre> -->
           </template>
         </el-table-column>
         <!-- 索引列 type="index-->
@@ -66,14 +79,24 @@
             <el-button size="mini" type="danger" icon="el-icon-delete">删除</el-button>
             <!-- @click="showSetRightDialog(scope.row)"：点击展开授予权限的对话框 -->
             <!-- scope.row：会获取整个一行的角色信息 -->
-            <el-button size="mini" type="warning" icon="el-icon-setting" @click="showSetRightDialog(scope.row)">分配权限</el-button>
+            <el-button
+              size="mini"
+              type="warning"
+              icon="el-icon-setting"
+              @click="showSetRightDialog(scope.row)"
+            >分配权限</el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-card>
 
     <!-- 分配权限的对话框 -->
-    <el-dialog title="分配权限" :visible.sync="setRightDialogVisible" width="50%" @close="setRightDialogClosed">
+    <el-dialog
+      title="分配权限"
+      :visible.sync="setRightDialogVisible"
+      width="50%"
+      @close="setRightDialogClosed"
+    >
       <!-- 树形控件 -->
       <!-- :data="rightslist"：树形控件的数据源 :props="treeProps"：树形控件的属性绑定对象 -->
       <!-- show-checkbox：是否展示复选框 -->
@@ -83,7 +106,15 @@
       <!-- 思路：在点击分配权限按钮的同时，将所有id的值获取过来，并绑定在默认选中的选项数组里 -->
       <!-- @close="setRightDialogClosed"：每次关闭对话框，都应该清空三级节点数组，防止数组不断累积 -->
       <!-- ref="treeRef"：给树形结构添加引用名字，这样就可以调用树形结构对象下面的方法 -->
-      <el-tree :data="rightslist" :props="treeProps" show-checkbox node-key="id" default-expand-all :default-checked-keys="defKeys" ref="treeRef"></el-tree>
+      <el-tree
+        :data="rightslist"
+        :props="treeProps"
+        show-checkbox
+        node-key="id"
+        default-expand-all
+        :default-checked-keys="defKeys"
+        ref="treeRef"
+      ></el-tree>
       <span slot="footer" class="dialog-footer">
         <el-button @click="setRightDialogVisible = false">取 消</el-button>
         <!-- 点击确定后，向服务器端发送请求 -->
@@ -110,9 +141,9 @@ export default {
         // 父子级节点通过使用哪个节点实现嵌套
         children: 'children'
       },
-      // 默认选中的节点Id值数组
+      // 设置树形控件中默认选中的内容
       defKeys: [],
-      // 当前即将分配权限的角色id
+      // 保存正在操作的角色id
       roleId: ''
     }
   },
@@ -123,36 +154,27 @@ export default {
     // 获取所有角色的列表
     async getRolesList() {
       const { data: res } = await this.$http.get('roles')
-
       if (res.meta.status !== 200) {
         return this.$message.error('获取角色列表失败！')
       }
-
       this.rolelist = res.data
-
       console.log(this.rolelist)
     },
 
     // 根据Id删除对应的权限
     async removeRightById(role, rightId) {
       // 弹框提示用户是否要删除
-      const confirmResult = await this.$confirm(
-        '此操作将永久删除该文件, 是否继续?',
-        '提示',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }
-      ).catch(err => err)
+      const confirmResult = await this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).catch((err) => err)
 
       if (confirmResult !== 'confirm') {
         return this.$message.info('取消了删除！')
       }
 
-      const { data: res } = await this.$http.delete(
-        `roles/${role.id}/rights/${rightId}`
-      )
+      const { data: res } = await this.$http.delete(`roles/${role.id}/rights/${rightId}`)
 
       if (res.meta.status !== 200) {
         return this.$message.error('删除权限失败！')
@@ -192,7 +214,7 @@ export default {
         return arr.push(node.id)
       }
       // 节点有children属性，继续遍历节点children数组，取出每一项，递归调用该方法
-      node.children.forEach(item => this.getLeafKeys(item, arr))
+      node.children.forEach((item) => this.getLeafKeys(item, arr))
     },
     // 监听分配权限对话框的关闭事件
     setRightDialogClosed() {
@@ -205,10 +227,7 @@ export default {
       // getCheckedKeys()：获取存储所有全选节点的id值 的数组
       // getHalfCheckedKeys()：获取存储所有半选节点的id值 的数组
       // 通过扩展运算符[...[数组],...[数组]]将两个数组合并为一个数组
-      const keys = [
-        ...this.$refs.treeRef.getCheckedKeys(),
-        ...this.$refs.treeRef.getHalfCheckedKeys()
-      ]
+      const keys = [...this.$refs.treeRef.getCheckedKeys(), ...this.$refs.treeRef.getHalfCheckedKeys()]
       // 将获得的id数组 转换为 以逗号分割的字符串
       const idStr = keys.join(',')
 
@@ -227,7 +246,7 @@ export default {
       this.$message.success('分配权限成功！')
       // 分配权限成功后，要重新刷新角色获取列表
       this.getRolesList()
-      //分配权限成功后，要隐藏分配权限弹出框
+      // 分配权限成功后，要隐藏分配权限弹出框
       this.setRightDialogVisible = false
     }
   }

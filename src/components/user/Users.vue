@@ -360,15 +360,14 @@ export default {
     async showEditDialog(id) {
       // 通过作用域插槽传来点击id
       // console.log(id)
-      // 发送请求 动态添加路由 id ，获取结果并解构重命名
+      // 发送请求根据id获取用户信息
       const { data: res } = await this.$http.get('users/' + id)
-
       if (res.meta.status !== 200) {
         return this.$message.error('查询用户信息失败！')
       }
-      // 没有报错，获取到的结果 添加到 数据模型中
+      // 将获取到的数据保存到数据editForm中
       this.editForm = res.data
-      // 点击修改按钮后，修改对话框变为可见
+      // 显示弹出窗
       this.editDialogVisible = true
     },
     // 监听修改用户对话框的关闭事件
@@ -386,11 +385,9 @@ export default {
           email: this.editForm.email,
           mobile: this.editForm.mobile
         })
-
         if (res.meta.status !== 200) {
           return this.$message.error('更新用户信息失败！')
         }
-
         // 关闭对话框
         this.editDialogVisible = false
         // 刷新数据列表
@@ -421,11 +418,9 @@ export default {
       }
 
       const { data: res } = await this.$http.delete('users/' + id)
-
       if (res.meta.status !== 200) {
         return this.$message.error('删除用户失败！')
       }
-
       this.$message.success('删除用户成功！')
       // 删除成功后 要记得重新加载 新的用户列表
       this.getUserList()
