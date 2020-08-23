@@ -1,5 +1,5 @@
 <template>
-<!-- 订单列表组件 -->
+  <!-- 订单列表组件 -->
   <div>
     <!-- 面包屑导航区域 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
@@ -31,15 +31,11 @@
         </el-table-column>
         <el-table-column label="是否发货" prop="is_send">
           <template slot-scope="scope">
-            <template>
-              {{scope.row.is_send}}
-            </template>
+            <template>{{scope.row.is_send}}</template>
           </template>
         </el-table-column>
         <el-table-column label="下单时间" prop="create_time">
-          <template slot-scope="scope">
-            {{scope.row.create_time | dateFormat}}
-          </template>
+          <template slot-scope="scope">{{scope.row.create_time | dateFormat}}</template>
         </el-table-column>
         <el-table-column label="操作">
           <template>
@@ -50,13 +46,25 @@
       </el-table>
 
       <!-- 分页区域 -->
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="queryInfo.pagenum" :page-sizes="[5, 10, 15]" :page-size="queryInfo.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="total">
-      </el-pagination>
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="queryInfo.pagenum"
+        :page-sizes="[5, 10, 15]"
+        :page-size="queryInfo.pagesize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
     </el-card>
 
     <!-- 修改地址的对话框 -->
     <el-dialog title="修改地址" :visible.sync="addressVisible" width="50%" @close="addressDialogClosed">
-      <el-form :model="addressForm" :rules="addressFormRules" ref="addressFormRef" label-width="100px">
+      <el-form
+        :model="addressForm"
+        :rules="addressFormRules"
+        ref="addressFormRef"
+        label-width="100px"
+      >
         <el-form-item label="省市区/县" prop="address1">
           <el-cascader :options="cityData" v-model="addressForm.address1"></el-cascader>
         </el-form-item>
@@ -74,9 +82,11 @@
     <el-dialog title="物流进度" :visible.sync="progressVisible" width="50%">
       <!-- 时间线 -->
       <el-timeline>
-        <el-timeline-item v-for="(activity, index) in progressInfo" :key="index" :timestamp="activity.time">
-          {{activity.context}}
-        </el-timeline-item>
+        <el-timeline-item
+          v-for="(activity, index) in progressInfo"
+          :key="index"
+          :timestamp="activity.time"
+        >{{activity.context}}</el-timeline-item>
       </el-timeline>
     </el-dialog>
   </div>
@@ -101,12 +111,8 @@ export default {
         address2: ''
       },
       addressFormRules: {
-        address1: [
-          { required: true, message: '请选择省市区县', trigger: 'blur' }
-        ],
-        address2: [
-          { required: true, message: '请填写详细地址', trigger: 'blur' }
-        ]
+        address1: [{ required: true, message: '请选择省市区县', trigger: 'blur' }],
+        address2: [{ required: true, message: '请填写详细地址', trigger: 'blur' }]
       },
       cityData,
       progressVisible: false,

@@ -1,5 +1,5 @@
 <template>
-<!-- 数据报表组件 echarts插件 -->
+  <!-- 数据报表组件 echarts插件 -->
   <div>
     <!-- 面包屑导航区域 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
@@ -68,7 +68,7 @@ export default {
     if (res.meta.status !== 200) {
       return this.$message.error('获取折线图数据失败！')
     }
-    // 4. 准备数据和配置项 
+    // 4. 准备数据和配置项
     // merge：合并两个数据对象
     const result = _.merge(res.data, this.options)
     // 5. 展示数据
