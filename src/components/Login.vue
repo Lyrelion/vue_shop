@@ -1,19 +1,26 @@
 <template>
   <div class="login_container">
+    <!-- 登录盒子 -->
     <div class="login_box">
-      <!-- 头像区域 -->
+      <!-- 头像 -->
       <div class="avatar_box">
-        <img src="../assets/logo.png" alt="我的头像">
+        <img src="../assets/logo.png" alt="我的头像" />
       </div>
       <!-- 登录表单区域 -->
       <!-- 运行后报错，因为element是按需导入的
       需要在 plugins/element.js 导入需要的内容 import {……}from 'element-ui'
-      全局注册：通过 Vue.use(xxx)实现全局可用 -->
+      然后通过 Vue.use(xxx)实现全局可用-->
       <!-- 数据绑定：:model="loginForm" -->
       <!-- 数据验证规则绑定：:rules="loginFormRules" -->
       <!-- ref="loginFormRef"：表单的实例对象，通过表单实例对象 调用表单方法，比如重置表单 -->
       <!-- resetFields：对整个表单进行重置，将所有字段值重置为初始值并移除校验结果 -->
-      <el-form ref="loginFormRef" :model="loginForm" :rules="loginFormRules" label-width="0px" class="login_form">
+      <el-form
+        ref="loginFormRef"
+        :model="loginForm"
+        :rules="loginFormRules"
+        label-width="0px"
+        class="login_form"
+      >
         <!-- 用户名 -->
         <!-- 添加校验规则：prop="username" -->
         <el-form-item prop="username">
@@ -22,7 +29,11 @@
         </el-form-item>
         <!-- 密码 -->
         <el-form-item prop="password">
-          <el-input v-model="loginForm.password" prefix-icon="iconfont icon-3702mima" type="password"></el-input>
+          <el-input
+            v-model="loginForm.password"
+            prefix-icon="iconfont icon-3702mima"
+            type="password"
+          ></el-input>
         </el-form-item>
         <!-- 按钮区域 -->
         <el-form-item class="btns">
@@ -70,13 +81,12 @@ export default {
       // 表单实例方法中的验证规则：validate(布尔值，回调函数)
       // valid：布尔值，判断用户名密码是否符合规则
       // 向服务器发送请求之前，必须提前验证数据的合法性
-      this.$refs.loginFormRef.validate(async valid => {
-        if (!valid) 
-           return // 如果不符合规则，直接返回
-        // 异步接收请求结果，并对结果进行结构 传送请求路径、请求参数
+      this.$refs.loginFormRef.validate(async (valid) => {
+        // 如果不符合规则，直接返回
+        if (!valid) return
+        // 异步axios接收请求结果，并对结果进行解构 传送请求路径、请求参数
         const { data: res } = await this.$http.post('login', this.loginForm)
-        if (res.meta.status !== 200) 
-           return this.$message.error('登录失败！')
+        if (res.meta.status !== 200) return this.$message.error('登录失败！')
         this.$message.success('登录成功')
         // 1. 将登录成功之后服务器传回来的的 token，保存到客户端的 sessionStorage 中
         //   1.1 项目中出了登录之外的其他API接口，必须在登录之后才能访问

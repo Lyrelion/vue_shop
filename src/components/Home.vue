@@ -3,7 +3,7 @@
     <!-- 头部区域 -->
     <el-header>
       <div>
-        <img src="../assets/logo.png" alt="">
+        <img src="../assets/logo.png" alt />
         <span>电商后台管理系统</span>
       </div>
       <el-button type="info" @click="logout">退出</el-button>
@@ -19,7 +19,16 @@
         <!-- unique-opened：是否只保持一个子菜单的展开 -->
         <!-- :collapse-transition="false"：取消动画效果 -->
         <!-- :default-active="activePath"：根据路由，点击高亮 -->
-        <el-menu background-color="#333744" text-color="#fff" active-text-color="#409EFF" unique-opened :collapse="isCollapse" :collapse-transition="false" router :default-active="activePath">
+        <el-menu
+          background-color="#333744"
+          text-color="#fff"
+          active-text-color="#409EFF"
+          unique-opened
+          :collapse="isCollapse"
+          :collapse-transition="false"
+          router
+          :default-active="activePath"
+        >
           <!-- 一级菜单 -->
           <!-- :index="item.id：这个是 element-UI规定的属性（要求字符串格式） -->
           <!-- 这个属性可以用来 指定路由规则 作为每个选项卡的唯一标识 -->
@@ -34,7 +43,12 @@
 
             <!-- 二级菜单 -->
             <!-- @click="saveNavState('/' + subItem.path)"：点击获取路由并保存到sessionstorage -->
-            <el-menu-item :index="'/' + subItem.path" v-for="subItem in item.children" :key="subItem.id" @click="saveNavState('/' + subItem.path)">
+            <el-menu-item
+              :index="'/' + subItem.path"
+              v-for="subItem in item.children"
+              :key="subItem.id"
+              @click="saveNavState('/' + subItem.path)"
+            >
               <template slot="title">
                 <!-- 图标 -->
                 <i class="el-icon-menu"></i>
@@ -80,19 +94,20 @@ export default {
     this.activePath = window.sessionStorage.getItem('activePath') // 指定高亮
   },
   methods: {
-    // 退出
+    // 退出登录
     logout() {
-      window.sessionStorage.clear() // 清空本地会话存储的令牌 token
-      this.$router.push('/login') // 重定向到登录页
+      // 清空本地会话存储的令牌 token
+      window.sessionStorage.clear()
+      // 重定向到登录页
+      this.$router.push('/login')
     },
     // 获取所有的菜单
     async getMenuList() {
       // 获取菜单信息并解构，然后挂载到 data() 中
       const { data: res } = await this.$http.get('menus')
-      if (res.meta.status !== 200) 
-          return this.$message.error(res.meta.msg)
+      if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
       // 如果不报错，给 data() 菜单列表 赋值
-      this.menulist = res.data 
+      this.menulist = res.data
       console.log(res)
     },
     // 点击按钮，切换菜单的折叠与展开
@@ -135,7 +150,7 @@ export default {
       margin-left: 15px;
     }
     img {
-      width:20%;
+      width: 20%;
     }
   }
 }
