@@ -1,5 +1,5 @@
 <template>
-<!-- 商品分类组件 -->
+  <!-- 商品分类组件 -->
   <div>
     <!-- 面包屑导航区域 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
@@ -16,17 +16,31 @@
         </el-col>
       </el-row>
 
-      <!-- 树形表格 用到依赖：vue-table-with-tree-grid -->
-      <!-- :columns="columns"：为table指定列的定义 -->
+      <!-- 树形表格 用到依赖：vue-table-with-tree-grid 在 main.js中声明该组件 -->
+      <!-- :columns="columns"：设置表格中列配置信息 -->
       <!-- :selection-type="false"：是否是多选框表格 -->
       <!-- :expand-type="false"：是否有展开行效果 -->
       <!-- show-index：是否显示数据索引 index-text="#"：指定索引列的名称 -->
       <!-- :show-row-hover="false"：鼠标移动上去是否具有高亮效果 -->
-      <tree-table class="treeTable" :data="catelist" :columns="columns" :selection-type="false" :expand-type="false" show-index index-text="#" border :show-row-hover="false">
+      <tree-table
+        class="treeTable"
+        :data="catelist"
+        :columns="columns"
+        :selection-type="false"
+        :expand-type="false"
+        show-index
+        index-text="#"
+        border
+        :show-row-hover="false"
+      >
         <!-- 是否有效 采用 if 按需渲染 -->
         <template slot="isok" slot-scope="scope">
           <!-- 对勾 -->
-          <i class="el-icon-success" v-if="scope.row.cat_deleted === false" style="color: lightgreen;"></i>
+          <i
+            class="el-icon-success"
+            v-if="scope.row.cat_deleted === false"
+            style="color: lightgreen;"
+          ></i>
           <!-- 错叉 -->
           <i class="el-icon-error" v-else style="color: red;"></i>
         </template>
@@ -49,14 +63,31 @@
       <!-- @size-change="handleSizeChange"：监听条数值改变的固定事件 -->
       <!-- :current-page：当前我们所渲染的页面 -->
       <!-- :total="total"：查询的总条数 -->
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="querInfo.pagenum" :page-sizes="[3, 5, 10, 15]" :page-size="querInfo.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="total">
-      </el-pagination>
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="querInfo.pagenum"
+        :page-sizes="[3, 5, 10, 15]"
+        :page-size="querInfo.pagesize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
     </el-card>
 
     <!-- 添加分类的对话框 -->
-    <el-dialog title="添加分类" :visible.sync="addCateDialogVisible" width="50%" @close="addCateDialogClosed">
+    <el-dialog
+      title="添加分类"
+      :visible.sync="addCateDialogVisible"
+      width="50%"
+      @close="addCateDialogClosed"
+    >
       <!-- 添加带有验证规则的分类表单 -->
-      <el-form :model="addCateForm" :rules="addCateFormRules" ref="addCateFormRef" label-width="100px">
+      <el-form
+        :model="addCateForm"
+        :rules="addCateFormRules"
+        ref="addCateFormRef"
+        label-width="100px"
+      >
         <el-form-item label="分类名称：" prop="cat_name">
           <el-input v-model="addCateForm.cat_name"></el-input>
         </el-form-item>
@@ -64,13 +95,20 @@
           <!-- <el-cascader：级联选择器 -->
           <!-- expand-trigger="hover"：通过鼠标覆盖 来实现展开效果 -->
           <!-- options 用来指定数据源 -->
-          <!-- props 用来指定配置对象 -->
+          <!-- props 用来指定配置数据显示规则 -->
           <!-- v-model="selectedKeys"：双向绑定的数据此处必须是数组，因为有至少两项 选中的父级分类的Id数组 -->
           <!-- @change="parentCateChanged"：只要父级选项框发生变化，就会触发的事件，比如改变子元素对应的父元素分级 -->
           <!-- clearable：是否支持清空选项 -->
           <!-- change-on-select：级联选择框不允许选择一级分类，写这个就可以选了 -->
-          <el-cascader expand-trigger="hover" :options="parentCateList" :props="cascaderProps" v-model="selectedKeys" @change="parentCateChanged" clearable change-on-select>
-          </el-cascader>
+          <el-cascader
+            expand-trigger="hover"
+            :options="parentCateList"
+            :props="cascaderProps"
+            v-model="selectedKeys"
+            @change="parentCateChanged"
+            clearable
+            change-on-select
+          ></el-cascader>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -91,37 +129,28 @@ export default {
         pagenum: 1,
         pagesize: 5
       },
-      // 商品分类的数据列表，默认为空
+      // 商品分类列表
       catelist: [],
       // 总数据条数
       total: 0,
-      // 为table指定列的定义
       columns: [
         {
-          // 列标题名称
           label: '分类名称',
-          // 列具体值
           prop: 'cat_name'
         },
         {
           label: '是否有效',
-          // 表示，将当前列定义为模板列
           type: 'template',
-          // 表示当前这一列使用模板名称
           template: 'isok'
         },
         {
           label: '排序',
-          // 表示，将当前列定义为模板列
           type: 'template',
-          // 表示当前这一列使用模板名称
           template: 'order'
         },
         {
           label: '操作',
-          // 表示，将当前列定义为模板列
           type: 'template',
-          // 表示当前这一列使用模板名称
           template: 'opt'
         }
       ],
@@ -229,7 +258,7 @@ export default {
     // 点击按钮，添加新的分类
     addCate() {
       // 先进行预校验
-      this.$refs.addCateFormRef.validate(async valid => {
+      this.$refs.addCateFormRef.validate(async (valid) => {
         if (!valid) return
         const { data: res } = await this.$http.post('categories', this.addCateForm)
 
