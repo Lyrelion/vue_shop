@@ -47,6 +47,7 @@ Vue.use(Button)
 Vue.use(Form)
 Vue.use(FormItem)
 Vue.use(Input)
+// 主页布局组件
 Vue.use(Container)
 Vue.use(Header)
 Vue.use(Aside)
@@ -54,16 +55,23 @@ Vue.use(Main)
 Vue.use(Menu)
 Vue.use(Submenu)
 Vue.use(MenuItem)
+// 面包屑导航组件
 Vue.use(Breadcrumb)
 Vue.use(BreadcrumbItem)
+// 卡片组件
 Vue.use(Card)
+// 栅格组件
 Vue.use(Row)
 Vue.use(Col)
 Vue.use(Table)
 Vue.use(TableColumn)
+// 开关组件
 Vue.use(Switch)
+// 悬浮提示组件
 Vue.use(Tooltip)
+// 分页组件
 Vue.use(Pagination)
+// 弹出框组件
 Vue.use(Dialog)
 Vue.use(Tag)
 Vue.use(Tree)

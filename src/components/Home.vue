@@ -89,8 +89,8 @@ export default {
     }
   },
   created() {
-    // 加载好之前，立刻默认执行的内容
-    this.getMenuList() // 获取菜单
+    // 在created阶段请求左侧菜单数据
+    this.getMenuList()
     this.activePath = window.sessionStorage.getItem('activePath') // 指定高亮
   },
   methods: {
@@ -103,12 +103,11 @@ export default {
     },
     // 获取所有的菜单
     async getMenuList() {
-      // 获取菜单信息并解构，然后挂载到 data() 中
+      // 发送请求获取左侧菜单数据
       const { data: res } = await this.$http.get('menus')
       if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
-      // 如果不报错，给 data() 菜单列表 赋值
       this.menulist = res.data
-      console.log(res)
+      // console.log(res)
     },
     // 点击按钮，切换菜单的折叠与展开
     toggleCollapse() {

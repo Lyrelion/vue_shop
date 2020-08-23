@@ -41,35 +41,60 @@
         <!-- 状态返回的是布尔值，无法直接在页面渲染，所以发生了数据结构改造 -->
         <!-- prop属性 和 作用域插槽 同时存在的情况下，props失效 -->
         <el-table-column label="状态">
-          <!-- 作用于插槽：slot-scope="scope" -->
+          <!-- 作用域插槽：slot-scope="scope" -->
           <template slot-scope="scope">
             <!-- scope.row：拿到的是本行全部数据，这里只绑定 数据中的状态属性 -->
             <!-- <el-switch：switch开关 通过 v-model 将开关状态和自己的数据关联 -->
             <!-- 为了将开关状态保存到数据库，绑定了事件，传递参数就是本行作用域全部信息 -->
-            <el-switch v-model="scope.row.mg_state" @change="userStateChanged(scope.row)">
-            </el-switch>
+            <el-switch v-model="scope.row.mg_state" @change="userStateChanged(scope.row)"></el-switch>
           </template>
         </el-table-column>
         <!-- 操作没有对应的数据源，所以去掉 props属性 -->
         <el-table-column label="操作" width="180px">
           <template slot-scope="scope">
             <!-- 修改按钮 @click="showEditDialog(scope.row.id)"：点击弹出修改对话框 -->
-            <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)"></el-button>
+            <el-button
+              type="primary"
+              icon="el-icon-edit"
+              size="mini"
+              @click="showEditDialog(scope.row.id)"
+            ></el-button>
             <!-- 删除按钮 -->
-            <el-button type="danger" icon="el-icon-delete" size="mini" @click="removeUserById(scope.row.id)"></el-button>
+            <el-button
+              type="danger"
+              icon="el-icon-delete"
+              size="mini"
+              @click="removeUserById(scope.row.id)"
+            ></el-button>
             <!-- 分配角色按钮 effect="dark"：提示框颜色 placement="top"：提示框显示位置 :enterable="false"：鼠标离开后隐藏提示框-->
             <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
               <!-- @click="setRole(scope.row)"：点击后出现 分配角色对话框，把对应的角色id传入 -->
-              <el-button type="warning" icon="el-icon-setting" size="mini" @click="setRole(scope.row)"></el-button>
+              <el-button
+                type="warning"
+                icon="el-icon-setting"
+                size="mini"
+                @click="setRole(scope.row)"
+              ></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
       </el-table>
 
-      <!-- 分页区域 Pagination分页 -->
-      <!-- @size-change="handleSizeChange"：监听分页改变事件，@current-change="handleCurrentChange"：监听页码值 -->
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="queryInfo.pagenum" :page-sizes="[1, 2, 5, 10]" :page-size="queryInfo.pagesize" layout="total, sizes, prev, pager, next, jumper" :total="total">
-      </el-pagination>
+      <!-- 分页导航区域
+@size-change(pagesize改变时触发)
+@current-change(页码发生改变时触发)
+:current-page(设置当前页码)
+:page-size(设置每页的数据条数)
+      :total(设置总页数)-->
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="queryInfo.pagenum"
+        :page-sizes="[1, 2, 5, 10]"
+        :page-size="queryInfo.pagesize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+      ></el-pagination>
     </el-card>
 
     <!-- 添加用户的对话框 -->
@@ -123,16 +148,26 @@
     </el-dialog>
 
     <!-- 分配角色的对话框 -->
-    <el-dialog title="分配角色" :visible.sync="setRoleDialogVisible" width="50%" @close="setRoleDialogClosed">
+    <el-dialog
+      title="分配角色"
+      :visible.sync="setRoleDialogVisible"
+      width="50%"
+      @close="setRoleDialogClosed"
+    >
       <div>
         <p>当前的用户：{{userInfo.username}}</p>
         <p>当前的角色：{{userInfo.role_name}}</p>
-        <p>分配新角色：
+        <p>
+          分配新角色：
           <!-- v-model="selectedRoleId"：双向绑定用户选择的值 -->
           <el-select v-model="selectedRoleId" placeholder="请选择">
             <!-- 遍历角色列表 每个item都是一个角色 获取每一项选择文本 把分配的角色id 绑到 data() -->
-            <el-option v-for="item in rolesList" :key="item.id" :label="item.roleName" :value="item.id">
-            </el-option>
+            <el-option
+              v-for="item in rolesList"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id"
+            ></el-option>
           </el-select>
         </p>
       </div>
@@ -252,20 +287,19 @@ export default {
   },
   methods: {
     async getUserList() {
-      // 发起 ajax请求，接收并重命名结果
+      // 发送请求获取用户列表数据
       const { data: res } = await this.$http.get('users', {
         // 要传递的参数 params在 data()中定义
         params: this.queryInfo
       })
+      // 如果返回状态为异常状态则报错并返回
       if (res.meta.status !== 200) {
         return this.$message.error('获取用户列表失败！')
       }
       // 控制台中打印 获取的结果
-      console.log(res)
-      // 没有 return出去，证明获取结果成功，给 用户列表、总条数赋值
+      // console.log(res)
       this.userlist = res.data.users
       this.total = res.data.total
-
     },
     // 监听 pagesize 改变的事件
     handleSizeChange(newSize) {
@@ -276,7 +310,7 @@ export default {
     },
     // 监听 页码值 改变的事件
     handleCurrentChange(newPage) {
-      console.log(newPage)
+      // console.log(newPage)
       // 监听到视图层的页码值改变 重新发送请求 渲染页面
       this.queryInfo.pagenum = newPage
       this.getUserList()
@@ -284,13 +318,12 @@ export default {
     // 监听 switch 开关状态的改变
     async userStateChanged(userinfo) {
       // 打印作用域插槽监听到的改变的用户信息
-      console.log(userinfo)
+      // console.log(userinfo)
       const { data: res } = await this.$http.put(
         // 转换为模板字符串，就可以动态绑定一些数据了
         `users/${userinfo.id}/state/${userinfo.mg_state}`
       )
       if (res.meta.status !== 200) {
-        // 如果更新失败，就要取消用户做出的修改，就是取反，回归原来
         userinfo.mg_state = !userinfo.mg_state
         return this.$message.error('更新用户状态失败！')
       }
@@ -304,13 +337,14 @@ export default {
     // 点击按钮，添加新用户
     addUser() {
       // 拿到表单引用，添加预校验事件
-      this.$refs.addFormRef.validate(async valid => {
+      this.$refs.addFormRef.validate(async (valid) => {
         // 如果校验失败 直接打断程序
-        if (!valid) 
-            return
+        if (!valid) {
+          return
+        }
         // 如果校验通过，可以发起真正的添加用户的网络请求
         const { data: res } = await this.$http.post('users', this.addForm)
-      
+
         if (res.meta.status !== 201) {
           this.$message.error('添加用户失败！')
         }
@@ -323,7 +357,8 @@ export default {
       })
     },
     // 展示编辑用户的对话框
-    async showEditDialog(id) { // 通过作用域插槽传来点击id
+    async showEditDialog(id) {
+      // 通过作用域插槽传来点击id
       // console.log(id)
       // 发送请求 动态添加路由 id ，获取结果并解构重命名
       const { data: res } = await this.$http.get('users/' + id)
@@ -342,17 +377,15 @@ export default {
     },
     // 修改用户信息并提交
     editUserInfo() {
-      this.$refs.editFormRef.validate(async valid => {
-        if (!valid) 
-            return
+      this.$refs.editFormRef.validate(async (valid) => {
+        if (!valid) {
+          return
+        }
         // 发起修改用户信息的数据请求
-        const { data: res } = await this.$http.put(
-          'users/' + this.editForm.id,
-          {
-            email: this.editForm.email,
-            mobile: this.editForm.mobile
-          }
-        )
+        const { data: res } = await this.$http.put('users/' + this.editForm.id, {
+          email: this.editForm.email,
+          mobile: this.editForm.mobile
+        })
 
         if (res.meta.status !== 200) {
           return this.$message.error('更新用户信息失败！')
@@ -368,7 +401,6 @@ export default {
     },
     // 根据Id删除对应的用户信息
     async removeUserById(id) {
-      
       // 弹框询问用户是否删除数据
       const confirmResult = await this.$confirm(
         '此操作将永久删除该用户, 是否继续?',
@@ -379,7 +411,7 @@ export default {
           type: 'warning'
         }
         // 这里必须捕获错误，否则点击取消按钮会报错
-      ).catch(err => err)
+      ).catch((err) => err)
       // $confirm：返回值是一个 promise，可以用 await/async进行优化
       // 如果用户确认删除，则返回值为字符串 confirm
       // 如果用户取消了删除，则返回值为字符串 cancel
@@ -408,7 +440,7 @@ export default {
       if (res.meta.status !== 200) {
         return this.$message.error('获取角色列表失败！')
       }
-      // 将获取到的数据结果，保存到 data()中给后面用 
+      // 将获取到的数据结果，保存到 data()中给后面用
       this.rolesList = res.data
       // 点击分配角色按钮后，将对话框状态转换为可见
       this.setRoleDialogVisible = true
@@ -419,12 +451,9 @@ export default {
         return this.$message.error('请选择要分配的角色！')
       }
 
-      const { data: res } = await this.$http.put(
-        `users/${this.userInfo.id}/role`,
-        {
-          rid: this.selectedRoleId
-        }
-      )
+      const { data: res } = await this.$http.put(`users/${this.userInfo.id}/role`, {
+        rid: this.selectedRoleId
+      })
 
       if (res.meta.status !== 200) {
         return this.$message.error('更新角色失败！')
